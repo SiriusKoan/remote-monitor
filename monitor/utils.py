@@ -1,4 +1,5 @@
 import abc
+import os
 import smtplib
 import time
 import threading
@@ -8,7 +9,7 @@ from . import config
 
 class Host(abc.ABC):
     def __init__(
-        self, ip_addr=None, domain=None, mac=None, hostname=None, monitoring_func=[]
+        self, ip_addr, domain=None, mac=None, hostname=None, monitoring_func=[]
     ) -> None:
         self.ip_addr = ip_addr
         self.domain = domain
@@ -16,18 +17,29 @@ class Host(abc.ABC):
         self.hostname = hostname
         self.monitoring_func = monitoring_func
 
+    def start(self):
+        for func in self.monitoring_func:
+            func.set_host(self)
+            func.start()
+
 
 class MonitoringFunc(abc.ABC):
     def __init__(self, name, func, interval=1) -> None:
         self.name = name
         self.func = func
         self.interval = interval
-        self.thread = threading.Thread(target=self.job)
+        self.thread = None
 
-    def job(self):
+    def set_host(self, host):
+        self.host = host
+        self.failure_msg = f"{self.host.ip_addr} Failure"
+        self.success_msg = f"{self.host.ip_addr} Success"
+        self.recover_msg = f"{self.host.ip_addr} Recover"
+
+    def job(self, host):
         fail = False
         while True:
-            res = self.func()
+            res = self.func(host)
             if not res:
                 self.send_failure()
                 fail = True
@@ -38,6 +50,7 @@ class MonitoringFunc(abc.ABC):
             time.sleep(self.interval)
 
     def start(self):
+        self.thread = threading.Thread(target=self.job, args=(self.host,))
         self.thread.start()
 
     def send_failure(self):
@@ -56,14 +69,14 @@ class NotifyTelegram(MonitoringFunc):
         self.bot = telebot.TeleBot(config.TELEGRAM_TOKEN)
         self.chat_id = config.TELEGRAM_CHAT_ID
 
-    def send_failure(self, msg):
-        self.bot.send_message(self.chat_id, msg)
+    def send_failure(self):
+        self.bot.send_message(self.chat_id, self.failure_msg)
 
-    def send_success(self, msg):
-        self.bot.send_message(self.chat_id, msg)
+    def send_success(self):
+        self.bot.send_message(self.chat_id, self.success_msg)
 
-    def send_recover(self, msg):
-        self.bot.send_message(self.chat_id, msg)
+    def send_recover(self):
+        self.bot.send_message(self.chat_id, self.recover_msg)
 
 
 class NotifyEmail(MonitoringFunc):
@@ -85,7 +98,34 @@ class NotifyEmail(MonitoringFunc):
     def compose_msg(self, subject, msg):
         return f"Subject: {subject}\n\n{msg}"
 
-    def send_msg(self, msg):
+    def send_failure(self):
         with self.connect_to_server() as server:
-            server.sendmail(self.username, self.username, msg)
+            server.sendmail(
+                self.username,
+                self.username,
+                self.compose_msg("failure", self.failure_msg),
+            )
 
+    def send_success(self):
+        with self.connect_to_server() as server:
+            server.sendmail(
+                self.username,
+                self.username,
+                self.compose_msg("success", self.success_msg),
+            )
+
+    def send_recover(self):
+        with self.connect_to_server() as server:
+            server.sendmail(
+                self.username,
+                self.username,
+                self.compose_msg("recover", self.recover_msg),
+            )
+
+
+def ping(host):
+    res = os.popen(f"ping -c 1 {host.ip_addr}")
+    if res:
+        return False
+    else:
+        return True
