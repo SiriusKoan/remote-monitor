@@ -25,6 +25,7 @@ class Host(abc.ABC):
 
 class MonitoringFunc(abc.ABC):
     def __init__(self, name, func, interval=1) -> None:
+        self.check_deps()
         self.name = name
         self.func = func
         self.interval = interval
@@ -49,6 +50,18 @@ class MonitoringFunc(abc.ABC):
                     fail = False
             time.sleep(self.interval)
 
+    @staticmethod
+    def colorize(category, msg):
+        color_table = {
+            "warning": "33m",
+            "error": "31m",
+            "info": "34m",
+        }
+        return "\033[" + color_table[category] + msg + "\033[39m"
+
+    def check_deps(self):
+        return NotImplemented
+
     def start(self):
         self.thread = threading.Thread(target=self.job, args=(self.host,))
         self.thread.start()
@@ -69,6 +82,12 @@ class NotifyTelegram(MonitoringFunc):
         self.bot = telebot.TeleBot(config.TELEGRAM_TOKEN)
         self.chat_id = config.TELEGRAM_CHAT_ID
 
+    def check_deps(self):
+        if not config.TELEGRAM_TOKEN:
+            print(self.colorize("warning", "[Warning] Environmental variable 'TELEGRAM_TOKEN' is not set, telegram notification may not work."))
+        if not config.TELEGRAM_CHAT_ID:
+            print(self.colorize("warning", "[Warning] Environmental variable 'TELEGRAM_CHAT_ID' is not set, telegram notification may not work."))
+
     def send_failure(self):
         self.bot.send_message(self.chat_id, self.failure_msg)
 
@@ -86,6 +105,18 @@ class NotifyEmail(MonitoringFunc):
         self.port = config.EMAIL_PORT
         self.username = config.EMAIL_HOST_USER
         self.password = config.EMAIL_HOST_PASSWORD
+
+    def check_deps(self):
+        if not config.EMAIL_HOST:
+            print(colorize("[Warning] Environmental variable 'EMAIL_HOST' is not set, email notification may not work."))
+        if not config.EMAIL_PORT:
+            print(colorize("[Warning] Environmental variable 'EMAIL_HOST_PORT' is not set, email notification may not work."))
+        if not config.EMAIL_HOST_USER:
+            print(colorize("[Warning] Environmental variable 'EMAIL_HOST_USER' is not set, email notification may not work."))
+        if not config.EMAIL_HOST_PASSWORD:
+            print(colorize("[Warning] Environmental variable 'EMAIL_HOST_PASSWORD' is not set, email notification may not work."))
+        if not config.EMAIL_ADMIN:
+            print(colorize("[Warning] Environmental variable 'EMAIL_ADMIN' is not set, email notification may not work."))
 
     def connect_to_server(self):
         server = smtplib.SMTP(self.host, self.port)
