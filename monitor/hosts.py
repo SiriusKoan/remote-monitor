@@ -1,9 +1,9 @@
 from .utils import Host
-from .funcs import ping_func
+from .funcs import ping_func, nmap_func
 
 
 class Google(Host):
     pass
 
 
-google = Google("8.8.8.8", monitoring_func=[ping_func])
+google = Google("8.8.8.8", monitoring_func=[ping_func, nmap_func])

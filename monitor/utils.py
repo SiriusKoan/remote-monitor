@@ -1,5 +1,6 @@
 import abc
 import os
+import subprocess
 import smtplib
 import time
 import threading
@@ -66,13 +67,13 @@ class MonitoringFunc(abc.ABC):
         self.thread = threading.Thread(target=self.job, args=(self.host,))
         self.thread.start()
 
-    def send_failure(self):
+    def send_failure(self, msg=None):
         return NotImplemented
 
-    def send_success(self):
+    def send_success(self, msg=None):
         return NotImplemented
 
-    def send_recover(self):
+    def send_recover(self, msg=None):
         return NotImplemented
 
 
@@ -98,14 +99,23 @@ class NotifyTelegram(MonitoringFunc):
                 )
             )
 
-    def send_failure(self):
-        self.bot.send_message(self.chat_id, self.failure_msg)
+    def send_failure(self, msg=None):
+        if msg:
+            self.bot.send_message(self.chat_id, msg)
+        else:
+            self.bot.send_message(self.chat_id, self.failure_msg)
 
-    def send_success(self):
-        self.bot.send_message(self.chat_id, self.success_msg)
+    def send_success(self, msg=None):
+        if msg:
+            self.bot.send_message(self.chat_id, msg)
+        else:
+            self.bot.send_message(self.chat_id, self.success_msg)
 
     def send_recover(self):
-        self.bot.send_message(self.chat_id, self.recover_msg)
+        if msg:
+            self.bot.send_message(self.chat_id, msg)
+        else:
+            self.bot.send_message(self.chat_id, self.recover_msg)
 
 
 class NotifyEmail(MonitoringFunc):
@@ -184,9 +194,15 @@ class NotifyEmail(MonitoringFunc):
             )
 
 
-def ping(host):
-    res = os.popen(f"ping -c 1 {host.ip_addr}")
+def ping(host, args="-c 1"):
+    res = subprocess.call(["ping", *args.split(), host.ip_addr], stdout=open(os.devnull, "w"), stderr=open(os.devnull, "w"))
     if res:
         return False
     else:
         return True
+
+def nmap(host, args="-Pn"):
+    with subprocess.Popen(f"nmap {args} {host.ip_addr}", stdout=subprocess.PIPE, shell=True) as process:
+        output = process.communicate()[0].decode("utf-8")
+        return output
+
