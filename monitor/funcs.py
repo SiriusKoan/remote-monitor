@@ -1,6 +1,6 @@
 import subprocess, os
 import time
-from .utils import NotifyEmail, NotifyTelegram, ping, nmap
+from .utils import NotifyEmail, NotifyTelegram, ping, nmap, smtp, smtps
 
 # There are some basic tests
 class PingTest(NotifyTelegram):
@@ -27,6 +27,9 @@ class PingTest(NotifyTelegram):
 class NmapTest(NotifyTelegram):
     def __init__(self, name, func, interval=1) -> None:
         super().__init__(name, func, interval)
+        self.failure_msg = ""
+        self.success_msg = ""
+        self.recover_msg = ""
 
     def check_deps(self):
         super().check_deps()
@@ -42,6 +45,27 @@ class NmapTest(NotifyTelegram):
                 self.send_failure(res)
             time.sleep(self.interval)
 
+class SMTPTest(NotifyTelegram):
+    def __init__(self, name, func, interval=1) -> None:
+        super().__init__(name, func, interval)
+        self.failure_msg = "SMTP Failure"
+        self.success_msg = "SMTP Success"
+        self.recover_msg = "SMTP Recover"
+
+    def check_deps(self):
+        super().check_deps()
+
+class SMTPSTest(NotifyTelegram):
+    def __init__(self, name, func, interval=1) -> None:
+        super().__init__(name, func, interval)
+        self.failure_msg = "SMTPS Failure"
+        self.success_msg = "SMTPS Success"
+        self.recover_msg = "SMTPS Recover"
+
+    def check_deps(self):
+        super().check_deps()
+
 
 ping_func = PingTest("ping", ping, interval=10)
 nmap_func = NmapTest("nmap", nmap, interval=1000)
+smtp_func = SMTPTest("smtp", smtp, interval=3)

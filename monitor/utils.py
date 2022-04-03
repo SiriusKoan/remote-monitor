@@ -35,9 +35,9 @@ class MonitoringFunc(abc.ABC):
 
     def set_host(self, host):
         self.host = host
-        self.failure_msg = f"{self.host.ip_addr} Failure"
-        self.success_msg = f"{self.host.ip_addr} Success"
-        self.recover_msg = f"{self.host.ip_addr} Recover"
+        self.failure_msg = f"Host: {self.host.ip_addr}\n" + self.failure_msg
+        self.success_msg = f"Host: {self.host.ip_addr}\n" + self.success_msg
+        self.recover_msg = f"Host: {self.host.ip_addr}\n" + self.recover_msg
 
     def job(self, host):
         fail = False
@@ -235,4 +235,18 @@ def nmap(host, args="-Pn"):
     with subprocess.Popen(f"nmap {args} {host.ip_addr}", stdout=subprocess.PIPE, shell=True) as process:
         output = process.communicate()[0].decode("utf-8")
         return output
+
+def smtp(host, timeout=3):
+    with Netcat(host.ip_addr, 25, timeout) as nc:
+        if nc.connect():
+            return True
+        else:
+            return False
+
+def smtps(host, timeout=3):
+    with Netcat(host.ip_addr, 465, timeout) as nc:
+        if nc.connect():
+            return True
+        else:
+            return False
 
