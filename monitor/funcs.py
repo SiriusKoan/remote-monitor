@@ -6,7 +6,7 @@ from .utils import NotifyEmail, NotifyTelegram, ping, nmap, smtp, smtps
 class PingTest(NotifyTelegram):
     def __init__(self, name, func, interval=1) -> None:
         super().__init__(name, func, interval)
-        self.failure_msg = "Ping Failure"
+        self.failure_msg = "Ping Fail"
         self.success_msg = "Ping Success"
         self.recover_msg = "Ping Recover"
 
@@ -37,18 +37,21 @@ class NmapTest(NotifyTelegram):
             print(self.colorize("warning", "[Warning] Command 'nmap' does not exist, 'nmap' test may fail."))
 
     def job(self, host):
-        while True:
-            res = self.func(host)
-            if res:
-                self.send_success(res)
-            else:
-                self.send_failure(res)
-            time.sleep(self.interval)
+        try:
+            while True:
+                res = self.func(host)
+                if res:
+                    self.send_success(res)
+                else:
+                    self.send_failure(res)
+                time.sleep(self.interval)
+        except:
+            pass
 
 class SMTPTest(NotifyTelegram):
     def __init__(self, name, func, interval=1) -> None:
         super().__init__(name, func, interval)
-        self.failure_msg = "SMTP Failure"
+        self.failure_msg = "SMTP Fail"
         self.success_msg = "SMTP Success"
         self.recover_msg = "SMTP Recover"
 
@@ -58,7 +61,7 @@ class SMTPTest(NotifyTelegram):
 class SMTPSTest(NotifyTelegram):
     def __init__(self, name, func, interval=1) -> None:
         super().__init__(name, func, interval)
-        self.failure_msg = "SMTPS Failure"
+        self.failure_msg = "SMTPS Fail"
         self.success_msg = "SMTPS Success"
         self.recover_msg = "SMTPS Recover"
 
@@ -66,6 +69,7 @@ class SMTPSTest(NotifyTelegram):
         super().check_deps()
 
 
-ping_func = PingTest("ping", ping, interval=10)
-nmap_func = NmapTest("nmap", nmap, interval=1000)
-smtp_func = SMTPTest("smtp", smtp, interval=3)
+ping_func = PingTest("ping", ping, interval=120)
+nmap_func = NmapTest("nmap", nmap, interval=7200)
+smtp_func = SMTPTest("smtp", smtp, interval=300)
+smtps_func = SMTPSTest("smtps", smtps, interval=300)

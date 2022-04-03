@@ -40,17 +40,20 @@ class MonitoringFunc(abc.ABC):
         self.recover_msg = f"Host: {self.host.ip_addr}\n" + self.recover_msg
 
     def job(self, host):
-        fail = False
-        while True:
-            res = self.func(host)
-            if not res:
-                self.send_failure()
-                fail = True
-            else:
-                if fail:
-                    self.send_recover()
-                    fail = False
-            time.sleep(self.interval)
+        try:
+            fail = False
+            while True:
+                res = self.func(host)
+                if not res:
+                    self.send_failure()
+                    fail = True
+                else:
+                    if fail:
+                        self.send_recover()
+                        fail = False
+                time.sleep(self.interval)
+        except Exception as e:
+            print(e)
 
     @staticmethod
     def colorize(category, msg):
@@ -112,7 +115,7 @@ class NotifyTelegram(MonitoringFunc):
         else:
             self.bot.send_message(self.chat_id, self.success_msg)
 
-    def send_recover(self):
+    def send_recover(self, msg=None):
         if msg:
             self.bot.send_message(self.chat_id, msg)
         else:
