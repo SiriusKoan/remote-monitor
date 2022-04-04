@@ -1,6 +1,6 @@
 import logging
 import logging.handlers
-import config
+from . import config
 
 
 class TelegramHandler:
@@ -8,6 +8,7 @@ class TelegramHandler:
 
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 handlers = []
 if config.SENDING_LEVEL:
     # stream

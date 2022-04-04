@@ -30,7 +30,7 @@ EMAIL_LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
 # Logging
 # Log file path
-LOG_FILE = "/var/log/monitoring.log"
+LOG_FILE = "monitoring.log"
 # Log format for file
 FILE_LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 # Log format for console
