@@ -66,107 +66,33 @@ class MonitoringFunc(abc.ABC):
         return "\033[" + color_table[category] + msg + "\033[39m"
 
     def check_deps(self):
-        return NotImplemented
+        pass
 
     def start(self):
         self.thread = threading.Thread(target=self.job, args=(self.host,))
         self.thread.start()
 
-    def send_failure(self, msg=None):
-        return NotImplemented
-
-    def send_success(self, msg=None):
-        return NotImplemented
-
-    def send_recover(self, msg=None):
-        return NotImplemented
-
-
-class NotifyTelegram(MonitoringFunc):
-    def __init__(self, name, func, interval=1) -> None:
-        super().__init__(name, func, interval)
-        self.bot = telebot.TeleBot(config.TELEGRAM_TOKEN)
-        self.chat_id = config.TELEGRAM_CHAT_ID
-
-    def check_deps(self):
-        if not config.TELEGRAM_TOKEN:
-            logger.warning("[Warning] Environmental variable 'TELEGRAM_TOKEN' is not set, telegram notification may not work.")
-        if not config.TELEGRAM_CHAT_ID:
-            logger.warning("[Warning] Environmental variable 'TELEGRAM_CHAT_ID' is not set, telegram notification may not work.")
+    def send(self, msg, level):
+        level = level.lower()
+        getattr(logger, level)(msg)
 
     def send_failure(self, msg=None):
         if msg:
-            self.bot.send_message(self.chat_id, msg)
+            logger.warning(msg)
         else:
-            self.bot.send_message(self.chat_id, self.failure_msg)
+            logger.warning(self.failure_msg)
 
     def send_success(self, msg=None):
         if msg:
-            self.bot.send_message(self.chat_id, msg)
+            logger.info(msg)
         else:
-            self.bot.send_message(self.chat_id, self.success_msg)
+            logger.info(self.success_msg)
 
     def send_recover(self, msg=None):
         if msg:
-            self.bot.send_message(self.chat_id, msg)
+            logger.warning(msg)
         else:
-            self.bot.send_message(self.chat_id, self.recover_msg)
-
-
-class NotifyEmail(MonitoringFunc):
-    def __init__(self, name, func, interval=1) -> None:
-        super().__init__(name, func, interval)
-        self.host = config.EMAIL_HOST
-        self.port = config.EMAIL_PORT
-        self.username = config.EMAIL_HOST_USER
-        self.password = config.EMAIL_HOST_PASSWORD
-
-    def check_deps(self):
-        if not config.EMAIL_HOST:
-            logger.warning("[Warning] Environmental variable 'EMAIL_HOST' is not set, email notification may not work.")
-        if not config.EMAIL_PORT:
-            logger.warning("[Warning] Environmental variable 'EMAIL_PORT' is not set, email notification may not work.")
-        if not config.EMAIL_HOST_USER:
-            logger.warning("[Warning] Environmental variable 'EMAIL_HOST_USER' is not set, email notification may not work.")
-        if not config.EMAIL_HOST_PASSWORD:
-            logger.warning("[Warning] Environmental variable 'EMAIL_HOST_PASSWORD' is not set, email notification may not work.")
-        if not config.EMAIL_ADMIN:
-            logger.warning("[Warning] Environmental variable 'EMAIL_ADMIN' is not set, email notification may not work.")
-
-    def connect_to_server(self):
-        server = smtplib.SMTP(self.host, self.port)
-        server.ehlo()
-        server.starttls()
-        server.ehlo()
-        server.login(self.username, self.password)
-        return server
-
-    def compose_msg(self, subject, msg):
-        return f"Subject: {subject}\n\n{msg}"
-
-    def send_failure(self):
-        with self.connect_to_server() as server:
-            server.sendmail(
-                self.username,
-                self.username,
-                self.compose_msg("failure", self.failure_msg),
-            )
-
-    def send_success(self):
-        with self.connect_to_server() as server:
-            server.sendmail(
-                self.username,
-                self.username,
-                self.compose_msg("success", self.success_msg),
-            )
-
-    def send_recover(self):
-        with self.connect_to_server() as server:
-            server.sendmail(
-                self.username,
-                self.username,
-                self.compose_msg("recover", self.recover_msg),
-            )
+            logger.warning(self.recover_msg)
 
 class Netcat:
     """ Python 'netcat like' module """

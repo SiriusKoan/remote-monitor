@@ -1,10 +1,10 @@
 import subprocess, os
 import time
-from .utils import NotifyEmail, NotifyTelegram, ping, nmap, smtp, smtps
+from .utils import MonitoringFunc, ping, nmap, smtp, smtps
 from .log import logger
 
 # There are some basic tests
-class PingTest(NotifyTelegram):
+class PingTest(MonitoringFunc):
     def __init__(self, name, func, interval=1) -> None:
         super().__init__(name, func, interval)
         self.failure_msg = "Ping Fail"
@@ -20,7 +20,7 @@ class PingTest(NotifyTelegram):
         ):
             logger.warning("Command 'ping' does not exist, 'ping' test may fail.")
 
-class NmapTest(NotifyTelegram):
+class NmapTest(MonitoringFunc):
     def __init__(self, name, func, interval=1) -> None:
         super().__init__(name, func, interval)
         self.failure_msg = ""
@@ -37,14 +37,15 @@ class NmapTest(NotifyTelegram):
             while True:
                 res = self.func(host)
                 if res:
-                    self.send_success(res)
+                    # the level is set to 'warning' because telegram and email can only receive messages with warning or above log level
+                    self.send(res, "warning")
                 else:
                     self.send_failure(res)
                 time.sleep(self.interval)
         except:
             pass
 
-class SMTPTest(NotifyTelegram):
+class SMTPTest(MonitoringFunc):
     def __init__(self, name, func, interval=1) -> None:
         super().__init__(name, func, interval)
         self.failure_msg = "SMTP Fail"
@@ -54,7 +55,7 @@ class SMTPTest(NotifyTelegram):
     def check_deps(self):
         super().check_deps()
 
-class SMTPSTest(NotifyTelegram):
+class SMTPSTest(MonitoringFunc):
     def __init__(self, name, func, interval=1) -> None:
         super().__init__(name, func, interval)
         self.failure_msg = "SMTPS Fail"
