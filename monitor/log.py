@@ -1,10 +1,33 @@
 import logging
 import logging.handlers
+import telebot
 from . import config
 
 
-class TelegramHandler:
-    pass
+class TelegramHandler(logging.Handler):
+    def __init__(self):
+        self.bot = telebot.TeleBot(config.TELEGRAM_TOKEN)
+        self.chat_id = config.TELEGRAM_CHAT_ID
+        super().__init__()
+
+    def emit(self, msg):
+        self.bot.send_message(self.chat_id, self.format(msg))
+
+class StreamFormatter(logging.Formatter):
+    def __init__(self, fmt):
+        self.color_table = {
+            logging.CRITICAL: "\033[31m",
+            logging.ERROR: "\033[31m",
+            logging.WARNING: "\033[33m",
+            logging.INFO: "\033[34m",
+        }
+        super().__init__(fmt)
+
+    def format(self, msg):
+        color = self.color_table[msg.levelno]
+        formatter = logging.Formatter(self._fmt)
+        return color + formatter.format(msg) + "\033[39m"
+
 
 
 logger = logging.getLogger(__name__)
@@ -16,7 +39,7 @@ if config.SENDING_LEVEL:
         if not config.CONSOLE_LOG_FORMAT:
             logger.warning("No log format is set for 'console'.")
         stream_handler = logging.StreamHandler()
-        stream_format = logging.Formatter(config.CONSOLE_LOG_FORMAT)
+        stream_format = StreamFormatter(config.CONSOLE_LOG_FORMAT)
         stream_handler.setLevel(config.SENDING_LEVEL.get("console"))
         stream_handler.setFormatter(stream_format)
         handlers.append(stream_handler)
@@ -49,8 +72,8 @@ if config.SENDING_LEVEL:
             logger.warning("No log format is set for 'telegram'")
         telegram_handler = TelegramHandler()
         telegram_format = logging.Formatter(config.TELEGRAM_LOG_FORMAT)
-        #telegram_handler.setLevel(config.SENDING_LEVEL.get("telegram"))
-        #telegram_handler.setFormatter(telegram_format)
+        telegram_handler.setLevel(config.SENDING_LEVEL.get("telegram"))
+        telegram_handler.setFormatter(telegram_format)
         handlers.append(telegram_handler)
     # email
     if config.SENDING_LEVEL.get("email", None):
