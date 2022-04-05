@@ -1,30 +1,36 @@
 import os
 import logging
 
+"""
+It is the sample file for config.py.
+Please DO NOT modify this file and make sure you have created config.py, or the system will crash.
+DO NOT comment any setting you don't need, just leave it original.
+"""
+
 # Telegram notification information
 # Telegram bot token, go get one from @BotFather
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+TELEGRAM_TOKEN = ""
 # Telegram chat_id, it can be yourself, the admin group, or a channel
 # The ID can be retrived from any message in the chat, just forward a message to @JsonDumpBot and find it in the json
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+TELEGRAM_CHAT_ID = ""
 # Log format
 TELEGRAM_LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
 # Email notification information
 # Email server, for example, smtp.gmail.com
-EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_HOST = "smtp.gmail.com"
 # Email server port, for example, 587 for gmail
-EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_PORT = 587
 # Email sender
-EMAIL_SENDER = os.getenv("EMAIL_SENDER")
+EMAIL_SENDER = ""
 # The email account used to send email
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_USER = ""
 # Password for the email account
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-# The recipient
-EMAIL_ADMIN = os.getenv("EMAIL_ADMIN")
+EMAIL_HOST_PASSWORD = ""
+# The recipient, there should be multiple admins separated by a space
+EMAIL_ADMIN = ""
 # Log subject
-EMAIL_LOG_SUBJECT = os.getenv("EMAIL_LOG_SUBJECT")
+EMAIL_LOG_SUBJECT = "An error occur"
 # Log format
 EMAIL_LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
