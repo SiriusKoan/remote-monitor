@@ -13,6 +13,7 @@ class TelegramHandler(logging.Handler):
     def emit(self, msg):
         self.bot.send_message(self.chat_id, self.format(msg))
 
+
 class StreamFormatter(logging.Formatter):
     def __init__(self, fmt):
         self.color_table = {
@@ -27,7 +28,6 @@ class StreamFormatter(logging.Formatter):
         color = self.color_table[msg.levelno]
         formatter = logging.Formatter(self._fmt)
         return color + formatter.format(msg) + "\033[39m"
-
 
 
 logger = logging.getLogger(__name__)

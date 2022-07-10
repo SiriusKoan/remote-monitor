@@ -1,72 +1,73 @@
-import subprocess, os
-import time
-from .utils import MonitoringFunc, ping, nmap, smtp, smtps
+import socket
+import os
+import subprocess
+from . import config
 from .log import logger
 
-# There are some basic tests
-class PingTest(MonitoringFunc):
-    def __init__(self, name, func, interval=1) -> None:
-        super().__init__(name, func, interval)
-        self.failure_msg = "Ping Fail"
-        self.success_msg = "Ping Success"
-        self.recover_msg = "Ping Recover"
 
-    def check_deps(self):
-        super().check_deps()
-        if subprocess.call(
-            ["which", "ping"],
-            stdout=open(os.devnull, "w"),
-            stderr=open(os.devnull, "w"),
-        ):
-            logger.warning("Command 'ping' does not exist, 'ping' test may fail.")
+class Netcat:
+    """Python 'netcat like' module"""
 
-class NmapTest(MonitoringFunc):
-    def __init__(self, name, func, interval=1) -> None:
-        super().__init__(name, func, interval)
-        self.failure_msg = ""
-        self.success_msg = ""
-        self.recover_msg = ""
+    """ The snippet is from https://gist.github.com/leonjza/f35a7252babdf77c8421 """
 
-    def check_deps(self):
-        super().check_deps()
-        if subprocess.call(["which", "nmap"], stdout=open(os.devnull, "w"), stderr=open(os.devnull, "w")):
-            logger.warning("Command 'nmap' does not exist, 'nmap' test may fail.")
+    def __init__(self, ip, port, timeout):
+        self.buff = ""
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.settimeout(timeout)
+        self.ip = ip
+        self.port = port
 
-    def job(self, host):
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args, **kwargs):
+        self.socket.close()
+
+    def connect(self):
         try:
-            while True:
-                res = self.func(host)
-                if res:
-                    # the level is set to 'warning' because telegram and email can only receive messages with warning or above log level
-                    self.send(res, "warning")
-                else:
-                    self.send_failure(res)
-                time.sleep(self.interval)
-        except:
-            pass
+            self.socket.connect((self.ip, self.port))
+            return True
+        except socket.timeout:
+            return False
 
-class SMTPTest(MonitoringFunc):
-    def __init__(self, name, func, interval=1) -> None:
-        super().__init__(name, func, interval)
-        self.failure_msg = "SMTP Fail"
-        self.success_msg = "SMTP Success"
-        self.recover_msg = "SMTP Recover"
+    def read(self, length=1024):
+        return self.socket.recv(length)
 
-    def check_deps(self):
-        super().check_deps()
-
-class SMTPSTest(MonitoringFunc):
-    def __init__(self, name, func, interval=1) -> None:
-        super().__init__(name, func, interval)
-        self.failure_msg = "SMTPS Fail"
-        self.success_msg = "SMTPS Success"
-        self.recover_msg = "SMTPS Recover"
-
-    def check_deps(self):
-        super().check_deps()
+    def write(self, data):
+        self.socket.send(data)
 
 
-ping_func = PingTest("ping", ping, interval=120)
-nmap_func = NmapTest("nmap", nmap, interval=7200)
-smtp_func = SMTPTest("smtp", smtp, interval=300)
-smtps_func = SMTPSTest("smtps", smtps, interval=300)
+def ping(host, args="-c 1"):
+    res = subprocess.call(
+        ["ping", *args.split(), host.ip_addr],
+        stdout=open(os.devnull, "w"),
+        stderr=open(os.devnull, "w"),
+    )
+    if res:
+        return False
+    else:
+        return True
+
+
+def nmap(host, args="-Pn"):
+    with subprocess.Popen(
+        f"nmap {args} {host.ip_addr}", stdout=subprocess.PIPE, shell=True
+    ) as process:
+        output = process.communicate()[0].decode("utf-8")
+        return output
+
+
+def smtp(host, timeout=3):
+    with Netcat(host.ip_addr, 25, timeout) as nc:
+        if nc.connect():
+            return True
+        else:
+            return False
+
+
+def smtps(host, timeout=3):
+    with Netcat(host.ip_addr, 465, timeout) as nc:
+        if nc.connect():
+            return True
+        else:
+            return False
