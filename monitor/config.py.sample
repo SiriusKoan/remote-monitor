@@ -51,4 +51,3 @@ SENDING_LEVEL = {
     "telegram": logging.WARNING,
     "email": logging.ERROR,
 }
-
