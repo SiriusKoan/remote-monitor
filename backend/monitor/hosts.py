@@ -5,6 +5,7 @@ hosts = [
         "name": "DNS",
         "addr": "8.8.8.8",
         "bool_functions": [(ping, [1])],
+        "text_functions": [(nmap, [3])],
     },
     {
         "name": "Mail",
