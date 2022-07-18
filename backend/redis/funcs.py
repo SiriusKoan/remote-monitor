@@ -1,6 +1,7 @@
 import os
 import redis
 
+
 class Redis:
     def __init__(self):
         # when no flask
@@ -19,11 +20,13 @@ class Redis:
     def get(self, host, func):
         return self.client.hget(host, func)
 
+
 r = Redis()
+
 
 def get_record(host, func):
     return r.get(host, func)
 
+
 def set_record(host, func, value):
     r.set(host, func, value)
-
