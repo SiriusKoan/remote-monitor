@@ -25,7 +25,8 @@ r = Redis()
 
 
 def get_record(host, func):
-    return r.get(host, func)
+    res = r.get(host, func)
+    return res if res else "false"
 
 
 def set_record(host, func, value):

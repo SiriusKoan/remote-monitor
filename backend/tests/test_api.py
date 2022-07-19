@@ -32,6 +32,6 @@ class APIFuncResultsTest(unittest.TestCase):
 
     def test_alive(self):
         response = self.client.get(
-            url_for("main.get_results_api", name="test", func="test")
+            url_for("main.get_results_api", host="test", func="test")
         )
         self.assertEqual(response.status_code, 200)

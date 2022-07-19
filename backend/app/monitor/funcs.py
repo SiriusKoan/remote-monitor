@@ -13,9 +13,9 @@ def ping(host, interval, ops="-c 1"):
             stderr=open(os.devnull, "w"),
         )
         if res:
-            set_record(host, "ping", "true")
-        else:
             set_record(host, "ping", "false")
+        else:
+            set_record(host, "ping", "true")
         sleep(interval)
 
 

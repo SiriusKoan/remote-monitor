@@ -4,13 +4,13 @@ hosts = [
     {
         "name": "DNS",
         "addr": "8.8.8.8",
-        "bool_functions": [(ping, [1])],
-        "text_functions": [(nmap, [3])],
+        "bool_functions": [(ping, (1,))],
+        "text_functions": [(nmap, (3,))],
     },
     {
         "name": "Mail",
         "addr": "10.1.1.1",
-        "bool_functions": [(ping, [1]), (smtp, [3, 3])],
-        "text_functions": [(nmap, [3])],
+        "bool_functions": [(ping, (1,)), (smtp, (3, 3))],
+        "text_functions": [(nmap, (3,))],
     },
 ]
