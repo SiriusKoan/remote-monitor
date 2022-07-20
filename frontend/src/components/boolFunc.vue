@@ -13,11 +13,11 @@ export default {
     props: {
         status: {
             type: String,
-            default: 'inactive'
+            default: 'inactive',
         },
-        name: String
-    }
-}
+        name: String,
+    },
+};
 </script>
 
 <style>
@@ -25,7 +25,7 @@ export default {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    display: inline-block
+    display: inline-block;
 }
 
 .active {

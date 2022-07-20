@@ -14,10 +14,9 @@ export default {
     name: 'boolFunc',
     props: {
         res: String,
-        name: String
-    }
-}
+        name: String,
+    },
+};
 </script>
 
-<style>
-</style>
+<style></style>
