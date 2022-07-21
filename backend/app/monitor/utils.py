@@ -23,7 +23,7 @@ class Netcat:
         try:
             self.socket.connect((self.ip, self.port))
             return True
-        except socket.timeout:
+        except:
             return False
 
     def read(self, length=1024):

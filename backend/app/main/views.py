@@ -18,10 +18,10 @@ def get_hosts_api():
             "name": host["name"],
             "addr": host["addr"],
             "bool_functions": [
-                func[0].__name__ for func in host["bool_functions"]
+                func.__name__ for func in host["bool_functions"]
             ],
             "text_functions": [
-                func[0].__name__ for func in host["text_functions"]
+                func.__name__ for func in host["text_functions"]
             ],
         }
         for host in hosts

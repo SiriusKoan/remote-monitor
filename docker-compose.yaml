@@ -22,7 +22,7 @@ services:
   backend:
     environment:
       - FLASK_APP=manage.py
-      - FLASK_ENV=production
+      - FLASK_ENV=development
       - REDIS_HOST=redis
     build:
       context: backend
