@@ -1,6 +1,7 @@
 import threading
 from .hosts import hosts
 
+
 def start_monitor():
     for host in hosts:
         for f in host["bool_functions"] + host["text_functions"]:
