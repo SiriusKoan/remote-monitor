@@ -3,9 +3,9 @@
         <div class="name">
             {{ name }}
         </div>
-        <div class="res">
-            {{ res }}
-        </div>
+        <pre class="content">
+            {{ content }}
+        </pre>
     </div>
 </template>
 
@@ -13,10 +13,14 @@
 export default {
     name: 'boolFunc',
     props: {
-        res: String,
+        content: String,
         name: String,
     },
 };
 </script>
 
-<style></style>
+<style>
+pre {
+    white-space: pre-line;
+}
+</style>

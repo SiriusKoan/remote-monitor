@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="bool-container">
         <span class="status" :class="status"></span>
         <span class="name">
             {{ name }}
@@ -21,11 +21,16 @@ export default {
 </script>
 
 <style>
+.bool-container {
+    display: flex;
+}
+
 .status {
-    width: 30px;
-    height: 30px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     display: inline-block;
+    margin-right: 5px;
 }
 
 .active {
