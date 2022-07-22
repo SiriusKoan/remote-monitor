@@ -28,6 +28,7 @@ services:
       context: backend
     volumes:
       - ./backend:/app
+      - ./keys:/app/keys
     networks:
       - net
   frontend:

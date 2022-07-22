@@ -14,6 +14,7 @@ from .funcs import (
     CheckIMAPS,
     CheckPOP3,
     CheckPOP3S,
+    SSHCommand,
 )
 
 hosts = [
@@ -29,19 +30,33 @@ hosts = [
         "bool_functions": [
             Ping(1),
             CheckSMTP(3),
-            CheckWebsite(60, hostname="google.com", schema="https"),
+            CheckWebsite(60, hostname="siriuskoan.one", schema="https"),
             CheckHTTP(3),
             CheckHTTPS(3),
             CheckIMAP(3),
             CheckPOP3(3),
         ],
-        "text_functions": [],
+        "text_functions": [
+            SSHCommand(
+                10,
+                'sudo docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"',
+                "siriuskoan",
+                name="docker stats",
+            )
+        ],
     },
     {
         "name": "Minecraft",
         "addr": "10.8.0.101",
         "bool_functions": [Ping(1), GeneralNC(60, 25565)],
-        "text_functions": [],
+        "text_functions": [
+            SSHCommand(
+                10,
+                'docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"',
+                "root",
+                name="docker stats",
+            )
+        ],
     },
     {
         "name": "NFS",

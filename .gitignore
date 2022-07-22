@@ -4,3 +4,4 @@ __pycache__
 env.sh
 monitoring.log
 config.py
+keys

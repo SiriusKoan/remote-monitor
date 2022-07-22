@@ -42,7 +42,7 @@ class GeneralNC:
                     set_record(self.host, self.__name__, "true")
                 else:
                     set_record(self.vhost, self.__name__, "false")
-            sleep(interval)
+            sleep(self.interval)
 
 
 class CheckSSH:
@@ -212,7 +212,7 @@ class CheckPOP3S:
 
 class CheckWebsite:
     def __init__(self, interval, hostname=None, schema="http", port=None):
-        self.__name__ = f"check website: {hostname}"
+        self.__name__ = f"check website with hostname {hostname}"
         self.interval = interval
         self.hostname = hostname
         self.schema = schema
@@ -222,7 +222,7 @@ class CheckWebsite:
         self.host = host
         if not self.hostname:
             self.hostname = self.host
-        self.__name__ = f"check website: {self.hostname}"
+        self.__name__ = f"check website with hostname {self.hostname}"
         if self.port:
             url = f"{self.schema}://{self.host}:{self.port}"
         else:
@@ -266,6 +266,28 @@ class DNSRecord:
         while True:
             with subprocess.Popen(
                 f"dig {self.record_type} {self.search} @{self.host}",
+                stdout=subprocess.PIPE,
+                shell=True,
+            ) as process:
+                output = process.communicate()[0].decode("utf-8")
+                set_record(self.host, self.__name__, output)
+            sleep(self.interval)
+
+
+class SSHCommand:
+    def __init__(self, interval, command, username, key="id_rsa", name=None):
+        # the command may be too long or contain troublesome char (like \t), so you can use name to name it
+        self.__name__ = f"send command: {name if name else command}"
+        self.interval = interval
+        self.command = command
+        self.username = username
+        self.key = key
+
+    def __call__(self, host):
+        self.host = host
+        while True:
+            with subprocess.Popen(
+                f"ssh -i /app/keys/{self.key} {self.username}@{self.host} '{self.command}'",
                 stdout=subprocess.PIPE,
                 shell=True,
             ) as process:
