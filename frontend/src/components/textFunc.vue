@@ -11,7 +11,7 @@
 
 <script>
 export default {
-    name: 'boolFunc',
+    name: 'textFunc',
     props: {
         content: String,
         name: String,
@@ -22,5 +22,12 @@ export default {
 <style>
 pre {
     white-space: pre-line;
+}
+
+.content {
+    margin-left: 5px;
+    padding-left: 5px;
+    border-left: 1px solid white;
+    font-size: 13px;
 }
 </style>

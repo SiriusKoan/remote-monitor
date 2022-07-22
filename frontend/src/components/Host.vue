@@ -1,12 +1,14 @@
 <template>
-    <div>
-        <div>{{ host.name }}</div>
-        <div>{{ host.addr }}</div>
+    <div class="container">
+        <div class="host">
+            <span>{{ host.name }} ({{ host.addr }})</span>
+        </div>
         <boolFunc
             v-for="f in host['bool_functions']"
             :name="f"
             :status="res[host.name][f] ? 'active' : 'inactive'"
         />
+        <div class="padding"></div>
         <textFunc
             v-for="f in host['text_functions']"
             :name="f"
@@ -30,3 +32,36 @@ export default {
     },
 };
 </script>
+
+<style>
+.container {
+    width: 30vw;
+    min-height: 300px;
+    -webkit-box-shadow: 5px 5px 13px 0px rgba(0, 0, 0, 0.5); 
+    box-shadow: 5px 5px 13px 0px rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+    background-color: rgb(85,100,131, 0.8);
+}
+
+.padding {
+    height: 10px;
+}
+
+.host {
+    font-size: larger;
+}
+
+@media (max-width: 1000px) {
+    .container {
+        width: 49vw;
+    }
+}
+
+@media (max-width: 700px) {
+    .container {
+        width: 90vw;
+    }
+}
+</style>
