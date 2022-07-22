@@ -21,7 +21,7 @@ hosts = [
         "name": "DNS",
         "addr": "10.8.0.2",
         "bool_functions": [Ping(1), CheckSSH(3), CheckDNS(3)],
-        "text_functions": [DNSRecord(60, "google.com")],
+        "text_functions": [],
     },
     {
         "name": "Mail",

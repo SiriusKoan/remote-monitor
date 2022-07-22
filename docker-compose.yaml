@@ -33,7 +33,7 @@ services:
   frontend:
     build:
       context: frontend
-    volumes:
-      - ./frontend:/app
+    #volumes:
+      #- ./frontend:/app
     networks:
       - net
