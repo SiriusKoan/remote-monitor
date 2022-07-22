@@ -287,7 +287,7 @@ class SSHCommand:
         self.host = host
         while True:
             with subprocess.Popen(
-                f"ssh -i /app/keys/{self.key} {self.username}@{self.host} '{self.command}'",
+                f"ssh -o StrictHostKeyChecking=no -i /app/keys/{self.key} {self.username}@{self.host} '{self.command}'",
                 stdout=subprocess.PIPE,
                 shell=True,
             ) as process:
