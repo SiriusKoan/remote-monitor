@@ -1,6 +1,9 @@
 # remote-monintor
 A simple network services monitoring system written in python.
 
+## Credits
+<a href="https://www.flaticon.com/free-icons/monitor" title="monitor icons">Monitor icons created by juicy_fish - Flaticon</a>
+
 ## Setup
 1. Clone this project
 ```
