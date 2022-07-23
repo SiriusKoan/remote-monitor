@@ -65,7 +65,9 @@ export default {
 main {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto;
     place-items: center;
+    row-gap: 10px;
 }
 
 #title {

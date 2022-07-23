@@ -37,6 +37,7 @@ export default {
 .container {
     width: 30vw;
     min-height: 300px;
+    height: 100%;
     -webkit-box-shadow: 5px 5px 13px 0px rgba(0, 0, 0, 0.5); 
     box-shadow: 5px 5px 13px 0px rgba(0, 0, 0, 0.5);
     padding: 10px;
