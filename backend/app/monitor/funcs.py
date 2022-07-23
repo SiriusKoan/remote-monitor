@@ -255,17 +255,22 @@ class Nmap:
 
 
 class DNSRecord:
-    def __init__(self, interval, search, record_type="A"):
-        self.__name__ = f"DNS: {search} {record_type}"
+    def __init__(self, interval, search, record_type="A", short=True):
+        self.__name__ = f"DNS search {search} {record_type}"
         self.interval = interval
         self.search = search
         self.record_type = record_type
+        self.short = short
 
     def __call__(self, host):
         self.host = host
         while True:
+            if self.short:
+                command = f"dig {self.record_type} {self.search} @{self.host} +short"
+            else:
+                command = f"dig {self.record_type} {self.search} @{self.host}"
             with subprocess.Popen(
-                f"dig {self.record_type} {self.search} @{self.host}",
+                command,
                 stdout=subprocess.PIPE,
                 shell=True,
             ) as process:

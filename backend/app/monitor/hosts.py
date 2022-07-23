@@ -22,7 +22,7 @@ hosts = [
         "name": "DNS",
         "addr": "10.8.0.2",
         "bool_functions": [Ping(1), CheckSSH(3), CheckDNS(3)],
-        "text_functions": [],
+        "text_functions": [DNSRecord(60, "siriuskoan.one", record_type="NS")],
     },
     {
         "name": "Mail",
@@ -39,7 +39,7 @@ hosts = [
         "text_functions": [
             SSHCommand(
                 10,
-                'sudo docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"',
+                r'sudo docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"',
                 "siriuskoan",
                 name="docker stats",
             )
@@ -52,7 +52,7 @@ hosts = [
         "text_functions": [
             SSHCommand(
                 10,
-                'docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"',
+                r'docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"',
                 "root",
                 name="docker stats",
             )
