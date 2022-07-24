@@ -21,6 +21,8 @@ services:
     image: redis:7.0.4-alpine
     networks:
       - net
+    ports:
+      - "127.0.0.1:6379:6379"
   backend:
     environment:
       - FLASK_APP=manage.py
