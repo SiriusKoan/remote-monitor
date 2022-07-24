@@ -23,12 +23,11 @@ def main(stdscr):
         cur = 0
         # stdscr.addstr(0, 0, str(t))
         for host in hosts:
-            pad = curses.newpad(10, curses.COLS - 1)
+            pad = curses.newpad(HEIGHT, curses.COLS - 1)
             pad.addstr(0, 0, f"{host['name']} ({host['addr']})")
             line = 1
             for f in host["bool_functions"]:
                 data = get(host["addr"], f)
-                # data = requests.get(f"http://localhost/api/{host['addr']}/{f}").text
                 if data == "true":
                     pad.addstr(line, 0, f + "\n", curses.color_pair(2))
                 else:
