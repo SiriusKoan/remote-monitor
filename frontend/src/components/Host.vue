@@ -36,14 +36,14 @@ export default {
 <style>
 .container {
     width: 30vw;
-    min-height: 300px;
+    min-height: 200px;
     height: 100%;
-    -webkit-box-shadow: 5px 5px 13px 0px rgba(0, 0, 0, 0.5); 
+    -webkit-box-shadow: 5px 5px 13px 0px rgba(0, 0, 0, 0.5);
     box-shadow: 5px 5px 13px 0px rgba(0, 0, 0, 0.5);
     padding: 10px;
     margin: 5px;
     border-radius: 10px;
-    background-color: rgb(85,100,131, 0.8);
+    background-color: rgb(85, 100, 131, 0.8);
 }
 
 .padding {

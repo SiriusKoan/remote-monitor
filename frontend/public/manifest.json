@@ -1,0 +1,16 @@
+{
+    "name": "Monitor",
+    "short_name": "Monitor",
+    "theme_color": "#262E40",
+    "background_color": "#262E40",
+    "display": "fullscreen",
+    "scope": "/",
+    "start_url": "/",
+    "icons": [
+        {
+            "src": "icon.png",
+            "type": "image/png",
+            "sizes": "256x256"
+        }
+    ]
+}
