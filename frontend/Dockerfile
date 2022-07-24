@@ -1,5 +1,5 @@
 FROM node:14-alpine
 WORKDIR /app
 ADD . /app/
-RUN npm install
+RUN npm ci
 CMD ["npm", "run", "serve", "--", "--host", "--port", "80"]
