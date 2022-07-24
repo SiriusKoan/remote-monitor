@@ -1,6 +1,7 @@
 <script>
 import axios from 'axios';
 import Host from './components/Host.vue';
+import Copyright from './components/Copyright.vue';
 export default {
     data() {
         return {
@@ -10,6 +11,7 @@ export default {
     },
     components: {
         Host,
+        Copyright,
     },
     methods: {
         update() {
@@ -59,6 +61,7 @@ export default {
     <main>
         <Host v-for="host in hosts" v-bind="{ host, res }" />
     </main>
+    <Copyright />
 </template>
 
 <style scoped>
