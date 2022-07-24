@@ -229,7 +229,7 @@ class CheckWebsite:
             url = f"{self.schema}://{self.host}"
         while True:
             r = requests.get(url, headers={"Host": self.hostname}, verify=False)
-            if r.status_code == 200:
+            if str(r.status_code).startswith("2") or str(r.status_code).startswith("3"):
                 set_record(self.host, self.__name__, "true")
             else:
                 set_record(self.host, self.__name__, "false")
