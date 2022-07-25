@@ -1,4 +1,5 @@
 import os
+import logging
 from time import sleep
 import subprocess
 import requests
@@ -26,8 +27,8 @@ class Ping:
                 else:
                     set_record(self.host, self.__name__, "true")
                 sleep(self.interval)
-            except:
-                pass
+            except Exception as e:
+                logging.error(e.args)
 
 
 class GeneralNC:
@@ -47,8 +48,8 @@ class GeneralNC:
                     else:
                         set_record(self.vhost, self.__name__, "false")
                 sleep(self.interval)
-            except:
-                pass
+            except Exception as e:
+                logging.error(e.args)
 
 
 class CheckSSH:
@@ -67,8 +68,8 @@ class CheckSSH:
                     else:
                         set_record(self.host, self.__name__, "false")
                 sleep(self.interval)
-            except:
-                pass
+            except Exception as e:
+                logging.error(e.args)
 
 
 class CheckDNS:
@@ -87,8 +88,8 @@ class CheckDNS:
                     else:
                         set_record(self.host, self.__name__, "false")
                 sleep(self.interval)
-            except:
-                pass
+            except Exception as e:
+                logging.error(e)
 
 
 class CheckSMTP:
@@ -107,8 +108,8 @@ class CheckSMTP:
                     else:
                         set_record(self.host, self.__name__, "false")
                 sleep(self.interval)
-            except:
-                pass
+            except Exception as e:
+                logging.error(e)
 
 
 class CheckSMTPS:
@@ -127,8 +128,8 @@ class CheckSMTPS:
                     else:
                         set_record(self.host, self.__name__, "false")
                 sleep(self.interval)
-            except:
-                pass
+            except Exception as e:
+                logging.error(e)
 
 
 class CheckHTTP:
@@ -147,8 +148,8 @@ class CheckHTTP:
                     else:
                         set_record(self.host, self.__name__, "false")
                 sleep(self.interval)
-            except:
-                pass
+            except Exception as e:
+                logging.error(e)
 
 
 class CheckHTTPS:
@@ -167,8 +168,8 @@ class CheckHTTPS:
                     else:
                         set_record(self.host, self.__name__, "false")
                 sleep(self.interval)
-            except:
-                pass
+            except Exception as e:
+                logging.error(e)
 
 
 class CheckIMAP:
@@ -187,8 +188,8 @@ class CheckIMAP:
                     else:
                         set_record(self.host, self.__name__, "false")
                 sleep(self.interval)
-            except:
-                pass
+            except Exception as e:
+                logging.error(e)
 
 
 class CheckIMAPS:
@@ -207,8 +208,8 @@ class CheckIMAPS:
                     else:
                         set_record(self.host, self.__name__, "false")
                 sleep(self.interval)
-            except:
-                pass
+            except Exception as e:
+                logging.error(e)
 
 
 class CheckPOP3:
@@ -227,8 +228,8 @@ class CheckPOP3:
                     else:
                         set_record(self.host, self.__name__, "false")
                 sleep(self.interval)
-            except:
-                pass
+            except Exception as e:
+                logging.error(e)
 
 
 class CheckPOP3S:
@@ -247,8 +248,8 @@ class CheckPOP3S:
                     else:
                         set_record(self.host, self.__name__, "false")
                 sleep(self.interval)
-            except:
-                pass
+            except Exception as e:
+                logging.error(e)
 
 
 class CheckWebsite:
@@ -277,8 +278,8 @@ class CheckWebsite:
                 else:
                     set_record(self.host, self.__name__, "false")
                 sleep(self.interval)
-            except:
-                pass
+            except Exception as e:
+                logging.error(e.args)
 
 
 # text functions
@@ -298,8 +299,8 @@ class Nmap:
                     output = process.communicate()[0].decode("utf-8")
                     set_record(self.host, self.__name__, output)
                 sleep(self.interval)
-            except:
-                pass
+            except Exception as e:
+                logging.error(e)
 
 
 class DNSRecord:
@@ -326,8 +327,8 @@ class DNSRecord:
                     output = process.communicate()[0].decode("utf-8")
                     set_record(self.host, self.__name__, output)
                 sleep(self.interval)
-            except:
-                pass
+            except Exception as e:
+                logging.error(e)
 
 
 class SSHCommand:
@@ -351,5 +352,5 @@ class SSHCommand:
                     output = process.communicate()[0].decode("utf-8")
                     set_record(self.host, self.__name__, output)
                 sleep(self.interval)
-            except:
-                pass
+            except Exception as e:
+                logging.error(e)
