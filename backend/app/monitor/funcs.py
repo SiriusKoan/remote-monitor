@@ -15,16 +15,19 @@ class Ping:
     def __call__(self, host):
         self.host = host
         while True:
-            res = subprocess.call(
-                ["ping", *self.ops.split(), self.host],
-                stdout=open(os.devnull, "w"),
-                stderr=open(os.devnull, "w"),
-            )
-            if res:
-                set_record(self.host, self.__name__, "false")
-            else:
-                set_record(self.host, self.__name__, "true")
-            sleep(self.interval)
+            try:
+                res = subprocess.call(
+                    ["ping", *self.ops.split(), self.host],
+                    stdout=open(os.devnull, "w"),
+                    stderr=open(os.devnull, "w"),
+                )
+                if res:
+                    set_record(self.host, self.__name__, "false")
+                else:
+                    set_record(self.host, self.__name__, "true")
+                sleep(self.interval)
+            except:
+                pass
 
 
 class GeneralNC:
@@ -37,12 +40,15 @@ class GeneralNC:
     def __call__(self, host):
         self.host = host
         while True:
-            with Netcat(self.host, self.port, self.timeout) as nc:
-                if nc.connect():
-                    set_record(self.host, self.__name__, "true")
-                else:
-                    set_record(self.vhost, self.__name__, "false")
-            sleep(self.interval)
+            try:
+                with Netcat(self.host, self.port, self.timeout) as nc:
+                    if nc.connect():
+                        set_record(self.host, self.__name__, "true")
+                    else:
+                        set_record(self.vhost, self.__name__, "false")
+                sleep(self.interval)
+            except:
+                pass
 
 
 class CheckSSH:
@@ -54,12 +60,15 @@ class CheckSSH:
     def __call__(self, host):
         self.host = host
         while True:
-            with Netcat(self.host, 22, self.timeout) as nc:
-                if nc.connect():
-                    set_record(self.host, self.__name__, "true")
-                else:
-                    set_record(self.host, self.__name__, "false")
-            sleep(self.interval)
+            try:
+                with Netcat(self.host, 22, self.timeout) as nc:
+                    if nc.connect():
+                        set_record(self.host, self.__name__, "true")
+                    else:
+                        set_record(self.host, self.__name__, "false")
+                sleep(self.interval)
+            except:
+                pass
 
 
 class CheckDNS:
@@ -71,12 +80,15 @@ class CheckDNS:
     def __call__(self, host):
         self.host = host
         while True:
-            with Netcat(self.host, 53, self.timeout) as nc:
-                if nc.connect():
-                    set_record(self.host, self.__name__, "true")
-                else:
-                    set_record(self.host, self.__name__, "false")
-            sleep(self.interval)
+            try:
+                with Netcat(self.host, 53, self.timeout) as nc:
+                    if nc.connect():
+                        set_record(self.host, self.__name__, "true")
+                    else:
+                        set_record(self.host, self.__name__, "false")
+                sleep(self.interval)
+            except:
+                pass
 
 
 class CheckSMTP:
@@ -88,12 +100,15 @@ class CheckSMTP:
     def __call__(self, host):
         self.host = host
         while True:
-            with Netcat(self.host, 25, self.timeout) as nc:
-                if nc.connect():
-                    set_record(self.host, self.__name__, "true")
-                else:
-                    set_record(self.host, self.__name__, "false")
-            sleep(self.interval)
+            try:
+                with Netcat(self.host, 25, self.timeout) as nc:
+                    if nc.connect():
+                        set_record(self.host, self.__name__, "true")
+                    else:
+                        set_record(self.host, self.__name__, "false")
+                sleep(self.interval)
+            except:
+                pass
 
 
 class CheckSMTPS:
@@ -105,12 +120,15 @@ class CheckSMTPS:
     def __call__(self, host):
         self.host = host
         while True:
-            with Netcat(self.host, 465, self.timeout) as nc:
-                if nc.connect():
-                    set_record(self.host, self.__name__, "true")
-                else:
-                    set_record(self.host, self.__name__, "false")
-            sleep(self.interval)
+            try:
+                with Netcat(self.host, 465, self.timeout) as nc:
+                    if nc.connect():
+                        set_record(self.host, self.__name__, "true")
+                    else:
+                        set_record(self.host, self.__name__, "false")
+                sleep(self.interval)
+            except:
+                pass
 
 
 class CheckHTTP:
@@ -122,12 +140,15 @@ class CheckHTTP:
     def __call__(self, host):
         self.host = host
         while True:
-            with Netcat(self.host, 80, self.timeout) as nc:
-                if nc.connect():
-                    set_record(self.host, self.__name__, "true")
-                else:
-                    set_record(self.host, self.__name__, "false")
-            sleep(self.interval)
+            try:
+                with Netcat(self.host, 80, self.timeout) as nc:
+                    if nc.connect():
+                        set_record(self.host, self.__name__, "true")
+                    else:
+                        set_record(self.host, self.__name__, "false")
+                sleep(self.interval)
+            except:
+                pass
 
 
 class CheckHTTPS:
@@ -139,11 +160,15 @@ class CheckHTTPS:
     def __call__(self, host):
         self.host = host
         while True:
-            with Netcat(self.host, 443, self.timeout) as nc:
-                if nc.connect():
-                    set_record(self.host, self.__name__, "true")
-                else:
-                    set_record(self.host, self.__name__, "false")
+            try:
+                with Netcat(self.host, 443, self.timeout) as nc:
+                    if nc.connect():
+                        set_record(self.host, self.__name__, "true")
+                    else:
+                        set_record(self.host, self.__name__, "false")
+                sleep(self.interval)
+            except:
+                pass
 
 
 class CheckIMAP:
@@ -155,11 +180,15 @@ class CheckIMAP:
     def __call__(self, host):
         self.host = host
         while True:
-            with Netcat(self.host, 143, self.timeout) as nc:
-                if nc.connect():
-                    set_record(self.host, self.__name__, "true")
-                else:
-                    set_record(self.host, self.__name__, "false")
+            try:
+                with Netcat(self.host, 143, self.timeout) as nc:
+                    if nc.connect():
+                        set_record(self.host, self.__name__, "true")
+                    else:
+                        set_record(self.host, self.__name__, "false")
+                sleep(self.interval)
+            except:
+                pass
 
 
 class CheckIMAPS:
@@ -171,11 +200,15 @@ class CheckIMAPS:
     def __call__(self, host):
         self.host = host
         while True:
-            with Netcat(self.host, 993, self.timeout) as nc:
-                if nc.connect():
-                    set_record(self.host, self.__name__, "true")
-                else:
-                    set_record(self.host, self.__name__, "false")
+            try:
+                with Netcat(self.host, 993, self.timeout) as nc:
+                    if nc.connect():
+                        set_record(self.host, self.__name__, "true")
+                    else:
+                        set_record(self.host, self.__name__, "false")
+                sleep(self.interval)
+            except:
+                pass
 
 
 class CheckPOP3:
@@ -187,11 +220,15 @@ class CheckPOP3:
     def __call__(self, host):
         self.host = host
         while True:
-            with Netcat(self.host, 110, self.timeout) as nc:
-                if nc.connect():
-                    set_record(self.host, self.__name__, "true")
-                else:
-                    set_record(self.host, self.__name__, "false")
+            try:
+                with Netcat(self.host, 110, self.timeout) as nc:
+                    if nc.connect():
+                        set_record(self.host, self.__name__, "true")
+                    else:
+                        set_record(self.host, self.__name__, "false")
+                sleep(self.interval)
+            except:
+                pass
 
 
 class CheckPOP3S:
@@ -203,16 +240,20 @@ class CheckPOP3S:
     def __call__(self, host):
         self.host = host
         while True:
-            with Netcat(self.host, 995, self.timeout) as nc:
-                if nc.connect():
-                    set_record(self.host, self.__name__, "true")
-                else:
-                    set_record(self.host, self.__name__, "false")
+            try:
+                with Netcat(self.host, 995, self.timeout) as nc:
+                    if nc.connect():
+                        set_record(self.host, self.__name__, "true")
+                    else:
+                        set_record(self.host, self.__name__, "false")
+                sleep(self.interval)
+            except:
+                pass
 
 
 class CheckWebsite:
     def __init__(self, interval, hostname=None, schema="http", port=None):
-        self.__name__ = f"check website with hostname {hostname}"
+        self.__name__ = f"check website"
         self.interval = interval
         self.hostname = hostname
         self.schema = schema
@@ -222,18 +263,22 @@ class CheckWebsite:
         self.host = host
         if not self.hostname:
             self.hostname = self.host
-        self.__name__ = f"check website with hostname {self.hostname}"
+        else:
+            self.__name__ = f"check website with hostname {self.hostname}"
         if self.port:
             url = f"{self.schema}://{self.host}:{self.port}"
         else:
             url = f"{self.schema}://{self.host}"
         while True:
-            r = requests.get(url, headers={"Host": self.hostname}, verify=False)
-            if str(r.status_code).startswith("2") or str(r.status_code).startswith("3"):
-                set_record(self.host, self.__name__, "true")
-            else:
-                set_record(self.host, self.__name__, "false")
-            sleep(self.interval)
+            try:
+                r = requests.get(url, headers={"Host": self.hostname}, verify=False)
+                if str(r.status_code).startswith("2") or str(r.status_code).startswith("3"):
+                    set_record(self.host, self.__name__, "true")
+                else:
+                    set_record(self.host, self.__name__, "false")
+                sleep(self.interval)
+            except:
+                pass
 
 
 # text functions
@@ -246,12 +291,15 @@ class Nmap:
     def __call__(self, host):
         self.host = host
         while True:
-            with subprocess.Popen(
-                f"nmap {self.ops} {self.host}", stdout=subprocess.PIPE, shell=True
-            ) as process:
-                output = process.communicate()[0].decode("utf-8")
-                set_record(self.host, self.__name__, output)
-            sleep(self.interval)
+            try:
+                with subprocess.Popen(
+                    f"nmap {self.ops} {self.host}", stdout=subprocess.PIPE, shell=True
+                ) as process:
+                    output = process.communicate()[0].decode("utf-8")
+                    set_record(self.host, self.__name__, output)
+                sleep(self.interval)
+            except:
+                pass
 
 
 class DNSRecord:
@@ -265,18 +313,21 @@ class DNSRecord:
     def __call__(self, host):
         self.host = host
         while True:
-            if self.short:
-                command = f"dig {self.record_type} {self.search} @{self.host} +short"
-            else:
-                command = f"dig {self.record_type} {self.search} @{self.host}"
-            with subprocess.Popen(
-                command,
-                stdout=subprocess.PIPE,
-                shell=True,
-            ) as process:
-                output = process.communicate()[0].decode("utf-8")
-                set_record(self.host, self.__name__, output)
-            sleep(self.interval)
+            try:
+                if self.short:
+                    command = f"dig {self.record_type} {self.search} @{self.host} +short"
+                else:
+                    command = f"dig {self.record_type} {self.search} @{self.host}"
+                with subprocess.Popen(
+                    command,
+                    stdout=subprocess.PIPE,
+                    shell=True,
+                ) as process:
+                    output = process.communicate()[0].decode("utf-8")
+                    set_record(self.host, self.__name__, output)
+                sleep(self.interval)
+            except:
+                pass
 
 
 class SSHCommand:
@@ -291,11 +342,14 @@ class SSHCommand:
     def __call__(self, host):
         self.host = host
         while True:
-            with subprocess.Popen(
-                f"ssh -o StrictHostKeyChecking=no -i /app/keys/{self.key} {self.username}@{self.host} '{self.command}'",
-                stdout=subprocess.PIPE,
-                shell=True,
-            ) as process:
-                output = process.communicate()[0].decode("utf-8")
-                set_record(self.host, self.__name__, output)
-            sleep(self.interval)
+            try:
+                with subprocess.Popen(
+                    f"ssh -o StrictHostKeyChecking=no -i /app/keys/{self.key} {self.username}@{self.host} '{self.command}'",
+                    stdout=subprocess.PIPE,
+                    shell=True,
+                ) as process:
+                    output = process.communicate()[0].decode("utf-8")
+                    set_record(self.host, self.__name__, output)
+                sleep(self.interval)
+            except:
+                pass
