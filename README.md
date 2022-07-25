@@ -32,4 +32,8 @@ Please add them in `backend/app/monitor/funcs.py`, and make sure
 3. The class has proper `__init__`
 
 ## Screenshot
+### Web UI
 ![image](https://user-images.githubusercontent.com/26023540/180340423-064cec57-7bea-45c6-87fd-b79628390969.png)
+
+### CLI
+![image](https://user-images.githubusercontent.com/26023540/180774516-dd81fbe3-aa40-4fc2-bb32-fe19dda5dc0e.png)
