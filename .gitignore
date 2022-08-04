@@ -6,3 +6,4 @@ monitoring.log
 keys
 nginx/ssl
 cli/hosts.py
+.coverage
