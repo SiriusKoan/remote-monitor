@@ -22,4 +22,4 @@ jobs:
     - name: test app
       env:
         FLASK_APP: "backend/manage.py"
-      run: flask test
+      run: python -m pytest --cov
