@@ -26,12 +26,11 @@ $ docker-compose up -d
 ## Customization
 You can also create your monitoring functions.
 
-All the functions are callable class, so you must write your monitoring function in `__call__` method.
+All the functions are callable class, and they inherit from `Base` class.
 
 Please add them in `backend/app/monitor/funcs.py`, and make sure
-1. They are callable
-2. `__call__` accept one argument `host`
-3. The class has proper `__init__`
+1. The class has `job` method, which is the main monitoring function
+1. The class has proper `__init__`
 
 ## CLI
 The application also provides CLI tool.
