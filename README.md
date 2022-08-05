@@ -1,4 +1,6 @@
 # remote-monintor
+[![.github/workflows/main.yml](https://github.com/SiriusKoan/remote-monitor/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/SiriusKoan/remote-monitor/actions/workflows/main.yml)
+
 A simple network services monitoring system written in python.
 
 ## Credits

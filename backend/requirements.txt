@@ -1,3 +1,5 @@
 flask
 redis
 requests
+pytest
+pytest-cov
