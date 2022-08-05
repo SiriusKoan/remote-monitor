@@ -1,4 +1,8 @@
 import socket
+import abc
+import logging
+from time import sleep
+from ..redis import set_record
 
 
 class Netcat:
@@ -31,3 +35,26 @@ class Netcat:
 
     def write(self, data):
         self.socket.send(data)
+
+
+class Base(abc.ABC):
+    @abc.abstractmethod
+    def __init__(self):
+        return NotImplemented
+
+    def __call__(self, host):
+        while True:
+            # logging.warning(f"Run {self.__name__}")
+            try:
+                res = self.job(host)
+                if isinstance(res, bool):
+                    set_record(host, self.__name__, "true" if res else "false")
+                else:
+                    set_record(host, self.__name__, res)
+            except Exception as e:
+                logging.error(e.args)
+            sleep(self.interval)
+
+    @abc.abstractmethod
+    def job(self, host):
+        return NotImplemented

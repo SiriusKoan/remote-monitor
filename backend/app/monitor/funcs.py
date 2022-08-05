@@ -1,258 +1,147 @@
 import os
-import logging
-from time import sleep
 import subprocess
 import requests
-from ..redis import set_record
-from .utils import Netcat
+from .utils import Netcat, Base
 
 # bool functions
-class Ping:
+class Ping(Base):
     def __init__(self, interval, ops="-c 1"):
         self.__name__ = "ping"
         self.interval = interval
         self.ops = ops
 
-    def __call__(self, host):
-        self.host = host
-        while True:
-            try:
-                res = subprocess.call(
-                    ["ping", *self.ops.split(), self.host],
-                    stdout=open(os.devnull, "w"),
-                    stderr=open(os.devnull, "w"),
-                )
-                if res:
-                    set_record(self.host, self.__name__, "false")
-                else:
-                    set_record(self.host, self.__name__, "true")
-            except Exception as e:
-                logging.error(e.args)
-            sleep(self.interval)
+    def job(self, host):
+        res = subprocess.call(
+            ["ping", *self.ops.split(), host],
+            stdout=open(os.devnull, "w"),
+            stderr=open(os.devnull, "w"),
+        )
+        return True if res == 0 else False
 
 
-class GeneralNC:
+class GeneralNC(Base):
     def __init__(self, interval, port, timeout=2):
         self.__name__ = f"nc: {port}"
         self.interval = interval
         self.port = port
         self.timeout = timeout
 
-    def __call__(self, host):
-        self.host = host
-        while True:
-            try:
-                with Netcat(self.host, self.port, self.timeout) as nc:
-                    if nc.connect():
-                        set_record(self.host, self.__name__, "true")
-                    else:
-                        set_record(self.host, self.__name__, "false")
-            except Exception as e:
-                logging.error(e.args)
-            sleep(self.interval)
+    def job(self, host):
+        with Netcat(host, self.port, self.timeout) as nc:
+            return nc.connect()
 
 
-class CheckSSH:
+class CheckSSH(Base):
     def __init__(self, interval, timeout=2):
         self.__name__ = "check SSH"
         self.interval = interval
         self.timeout = timeout
 
-    def __call__(self, host):
-        self.host = host
-        while True:
-            try:
-                with Netcat(self.host, 22, self.timeout) as nc:
-                    if nc.connect():
-                        set_record(self.host, self.__name__, "true")
-                    else:
-                        set_record(self.host, self.__name__, "false")
-            except Exception as e:
-                logging.error(e.args)
-            sleep(self.interval)
+    def job(self, host):
+        with Netcat(host, 22, self.timeout) as nc:
+            return nc.connect()
 
 
-class CheckDNS:
+class CheckDNS(Base):
     def __init__(self, interval, timeout=2):
         self.__name__ = "check DNS"
         self.interval = interval
         self.timeout = timeout
 
-    def __call__(self, host):
-        self.host = host
-        while True:
-            try:
-                with Netcat(self.host, 53, self.timeout) as nc:
-                    if nc.connect():
-                        set_record(self.host, self.__name__, "true")
-                    else:
-                        set_record(self.host, self.__name__, "false")
-            except Exception as e:
-                logging.error(e)
-            sleep(self.interval)
+    def job(self, host):
+        with Netcat(host, 53, self.timeout) as nc:
+            return nc.connect()
 
 
-class CheckSMTP:
+class CheckSMTP(Base):
     def __init__(self, interval, timeout=2):
         self.__name__ = "check SMTP"
         self.interval = interval
         self.timeout = timeout
 
-    def __call__(self, host):
-        self.host = host
-        while True:
-            try:
-                with Netcat(self.host, 25, self.timeout) as nc:
-                    if nc.connect():
-                        set_record(self.host, self.__name__, "true")
-                    else:
-                        set_record(self.host, self.__name__, "false")
-            except Exception as e:
-                logging.error(e)
-            sleep(self.interval)
+    def job(self, host):
+        with Netcat(host, 25, self.timeout) as nc:
+            return nc.connect()
 
 
-class CheckSMTPS:
+class CheckSMTPS(Base):
     def __init__(self, interval, timeout=2):
         self.__name__ = "check SMTPS"
         self.interval = interval
         self.timeout = timeout
 
-    def __call__(self, host):
-        self.host = host
-        while True:
-            try:
-                with Netcat(self.host, 465, self.timeout) as nc:
-                    if nc.connect():
-                        set_record(self.host, self.__name__, "true")
-                    else:
-                        set_record(self.host, self.__name__, "false")
-            except Exception as e:
-                logging.error(e)
-            sleep(self.interval)
+    def job(self, host):
+        with Netcat(host, 465, self.timeout) as nc:
+            return nc.connect()
 
 
-class CheckHTTP:
+class CheckHTTP(Base):
     def __init__(self, interval, timeout=2):
         self.__name__ = "check HTTP"
         self.interval = interval
         self.timeout = timeout
 
-    def __call__(self, host):
-        self.host = host
-        while True:
-            try:
-                with Netcat(self.host, 80, self.timeout) as nc:
-                    if nc.connect():
-                        set_record(self.host, self.__name__, "true")
-                    else:
-                        set_record(self.host, self.__name__, "false")
-            except Exception as e:
-                logging.error(e)
-            sleep(self.interval)
+    def job(self, host):
+        with Netcat(host, 80, self.timeout) as nc:
+            return nc.connect()
 
 
-class CheckHTTPS:
+class CheckHTTPS(Base):
     def __init__(self, interval, timeout=2):
         self.__name__ = "check HTTPS"
         self.interval = interval
         self.timeout = timeout
 
-    def __call__(self, host):
-        self.host = host
-        while True:
-            try:
-                with Netcat(self.host, 443, self.timeout) as nc:
-                    if nc.connect():
-                        set_record(self.host, self.__name__, "true")
-                    else:
-                        set_record(self.host, self.__name__, "false")
-            except Exception as e:
-                logging.error(e)
-            sleep(self.interval)
+    def job(self, host):
+        with Netcat(host, 443, self.timeout) as nc:
+            return nc.connect()
 
 
-class CheckIMAP:
+class CheckIMAP(Base):
     def __init__(self, interval, timeout=2):
         self.__name__ = "check IMAP"
         self.interval = interval
         self.timeout = timeout
 
-    def __call__(self, host):
-        self.host = host
-        while True:
-            try:
-                with Netcat(self.host, 143, self.timeout) as nc:
-                    if nc.connect():
-                        set_record(self.host, self.__name__, "true")
-                    else:
-                        set_record(self.host, self.__name__, "false")
-            except Exception as e:
-                logging.error(e)
-            sleep(self.interval)
+    def job(self, host):
+        with Netcat(host, 143, self.timeout) as nc:
+            return nc.connect()
 
 
-class CheckIMAPS:
+class CheckIMAPS(Base):
     def __init__(self, interval, timeout=2):
         self.__name__ = "check IMAPS"
         self.interval = interval
         self.timeout = timeout
 
-    def __call__(self, host):
-        self.host = host
-        while True:
-            try:
-                with Netcat(self.host, 993, self.timeout) as nc:
-                    if nc.connect():
-                        set_record(self.host, self.__name__, "true")
-                    else:
-                        set_record(self.host, self.__name__, "false")
-            except Exception as e:
-                logging.error(e)
-            sleep(self.interval)
+    def job(self, host):
+        with Netcat(host, 993, self.timeout) as nc:
+            return nc.connect()
 
 
-class CheckPOP3:
+class CheckPOP3(Base):
     def __init__(self, interval, timeout=2):
         self.__name__ = "check POP3"
         self.interval = interval
         self.timeout = timeout
 
-    def __call__(self, host):
-        self.host = host
-        while True:
-            try:
-                with Netcat(self.host, 110, self.timeout) as nc:
-                    if nc.connect():
-                        set_record(self.host, self.__name__, "true")
-                    else:
-                        set_record(self.host, self.__name__, "false")
-            except Exception as e:
-                logging.error(e)
-            sleep(self.interval)
+    def job(self, host):
+        with Netcat(host, 110, self.timeout) as nc:
+            return nc.connect()
 
 
-class CheckPOP3S:
+class CheckPOP3S(Base):
     def __init__(self, interval, timeout=2):
         self.__name__ = "check POP3S"
         self.interval = interval
         self.timeout = timeout
 
-    def __call__(self, host):
-        self.host = host
-        while True:
-            try:
-                with Netcat(self.host, 995, self.timeout) as nc:
-                    if nc.connect():
-                        set_record(self.host, self.__name__, "true")
-                    else:
-                        set_record(self.host, self.__name__, "false")
-            except Exception as e:
-                logging.error(e)
-            sleep(self.interval)
+    def job(self, host):
+        with Netcat(host, 995, self.timeout) as nc:
+            return nc.connect()
 
 
-class CheckWebsite:
+class CheckWebsite(Base):
     def __init__(self, interval, hostname=None, schema="http", port=None):
         self.__name__ = f"check website"
         self.interval = interval
@@ -260,50 +149,39 @@ class CheckWebsite:
         self.schema = schema
         self.port = port
 
-    def __call__(self, host):
-        self.host = host
+    def job(self, host):
         if not self.hostname:
-            self.hostname = self.host
+            self.hostname = host
         else:
             self.__name__ = f"check website with hostname {self.hostname}"
         if self.port:
-            url = f"{self.schema}://{self.host}:{self.port}"
+            url = f"{self.schema}://{host}:{self.port}"
         else:
-            url = f"{self.schema}://{self.host}"
-        while True:
-            try:
-                r = requests.get(url, headers={"Host": self.hostname}, verify=False)
-                if str(r.status_code).startswith("2") or str(r.status_code).startswith("3"):
-                    set_record(self.host, self.__name__, "true")
-                else:
-                    set_record(self.host, self.__name__, "false")
-            except Exception as e:
-                logging.error(e.args)
-            sleep(self.interval)
+            url = f"{self.schema}://{host}"
+        r = requests.get(url, headers={"Host": self.hostname}, verify=False)
+        if str(r.status_code).startswith("2") or str(r.status_code).startswith("3"):
+            # 2xx and 3xx are both okay
+            return True
+        else:
+            return False
 
 
 # text functions
-class Nmap:
+class Nmap(Base):
     def __init__(self, interval, ops="-Pn"):
         self.__name__ = "nmap"
         self.interval = interval
         self.ops = ops
 
-    def __call__(self, host):
-        self.host = host
-        while True:
-            try:
-                with subprocess.Popen(
-                    f"nmap {self.ops} {self.host}", stdout=subprocess.PIPE, shell=True
-                ) as process:
-                    output = process.communicate()[0].decode("utf-8")
-                    set_record(self.host, self.__name__, output)
-            except Exception as e:
-                logging.error(e)
-            sleep(self.interval)
+    def job(self, host):
+        with subprocess.Popen(
+            f"nmap {self.ops} {host}", stdout=subprocess.PIPE, shell=True
+        ) as process:
+            output = process.communicate()[0].decode("utf-8")
+            return output
 
 
-class DNSRecord:
+class DNSRecord(Base):
     def __init__(self, interval, search, record_type="A", short=True):
         self.__name__ = f"DNS search {search} {record_type}"
         self.interval = interval
@@ -311,27 +189,21 @@ class DNSRecord:
         self.record_type = record_type
         self.short = short
 
-    def __call__(self, host):
-        self.host = host
-        while True:
-            try:
-                if self.short:
-                    command = f"dig {self.record_type} {self.search} @{self.host} +short"
-                else:
-                    command = f"dig {self.record_type} {self.search} @{self.host}"
-                with subprocess.Popen(
-                    command,
-                    stdout=subprocess.PIPE,
-                    shell=True,
-                ) as process:
-                    output = process.communicate()[0].decode("utf-8")
-                    set_record(self.host, self.__name__, output)
-            except Exception as e:
-                logging.error(e)
-            sleep(self.interval)
+    def job(self, host):
+        if self.short:
+            command = f"dig {self.record_type} {self.search} @{host} +short"
+        else:
+            command = f"dig {self.record_type} {self.search} @{host}"
+            with subprocess.Popen(
+                command,
+                stdout=subprocess.PIPE,
+                shell=True,
+            ) as process:
+                output = process.communicate()[0].decode("utf-8")
+                return output
 
 
-class SSHCommand:
+class SSHCommand(Base):
     def __init__(self, interval, command, username, key="id_rsa", name=None):
         # the command may be too long or contain troublesome char (like \t), so you can use name to name it
         self.__name__ = f"send command: {name if name else command}"
@@ -340,17 +212,11 @@ class SSHCommand:
         self.username = username
         self.key = key
 
-    def __call__(self, host):
-        self.host = host
-        while True:
-            try:
-                with subprocess.Popen(
-                    f"ssh -o StrictHostKeyChecking=no -i /app/keys/{self.key} {self.username}@{self.host} '{self.command}'",
-                    stdout=subprocess.PIPE,
-                    shell=True,
-                ) as process:
-                    output = process.communicate()[0].decode("utf-8")
-                    set_record(self.host, self.__name__, output)
-            except Exception as e:
-                logging.error(e)
-            sleep(self.interval)
+    def job(self, host):
+        with subprocess.Popen(
+            f"ssh -o StrictHostKeyChecking=no -i /app/keys/{self.key} {self.username}@{host} '{self.command}'",
+            stdout=subprocess.PIPE,
+            shell=True,
+        ) as process:
+            output = process.communicate()[0].decode("utf-8")
+            return output
