@@ -52,6 +52,7 @@ class Base(abc.ABC):
                 else:
                     set_record(host, self.__name__, res)
             except Exception as e:
+                set_record(host, self.__name__, "")
                 logging.error(e.args)
             sleep(self.interval)
 
