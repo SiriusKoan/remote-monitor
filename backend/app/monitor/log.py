@@ -2,7 +2,7 @@ import logging
 import logging.handlers
 from . import config
 
-class Formatter(logging.Formatter):
+class ColorFormatter(logging.Formatter):
     def __init__(self, fmt):
         self.color_table = {
             logging.CRITICAL: "\033[31m",
@@ -23,15 +23,22 @@ logger.setLevel(logging.DEBUG)
 
 # console handler
 stream_handler = logging.StreamHandler()
-stream_format = Formatter(config.CONSOLE_LOG_FORMAT)
+stream_format = ColorFormatter(config.CONSOLE_LOG_FORMAT)
 stream_handler.setLevel(config.SENDING_LEVEL.get("console"))
 stream_handler.setFormatter(stream_format)
 logger.addHandler(stream_handler)
 
 # file handler
 file_handler = logging.FileHandler(config.LOG_FILE)
-file_format = Formatter(config.FILE_LOG_FORMAT)
+file_format = ColorFormatter(config.FILE_LOG_FORMAT)
 file_handler.setLevel(config.SENDING_LEVEL.get("file"))
 file_handler.setFormatter(file_format)
 logger.addHandler(file_handler)
+
+# email handler
+email_handler = logging.handlers.SMTPHandler(mailhost=config.MAIL_HOST, fromaddr=config.EMAIL_SENDER, toaddrs=config.EMAIL_ADMIN, subject=config.EMAIL_LOG_SUBJECT)
+email_format = logging.Formatter(config.EMAIL_LOG_FORMAT)
+email_handler.setLevel(config.SENDING_LEVEL.get("email"))
+email_handler.setFormatter(email_format)
+logger.addHandler(email_handler)
 

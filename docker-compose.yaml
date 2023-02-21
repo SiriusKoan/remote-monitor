@@ -25,12 +25,23 @@ services:
       - net
     ports:
       - "127.0.0.1:6379:6379"
+  postfix:
+    build:
+      context: postfix
+    container_name: postfix
+    networks:
+      - net
   backend:
     container_name: backend
     environment:
       - FLASK_APP=manage.py
       - FLASK_ENV=development
       - REDIS_HOST=redis
+      - MAIL_HOST=postfix
+    depends_on:
+      - postfix
+      - redis
+      - nginx
     build:
       context: backend
     volumes:
@@ -43,6 +54,9 @@ services:
     container_name: frontend
     build:
       context: frontend
+    depends_on:
+      - backend
+      - nginx
     #volumes:
       #- ./frontend:/app
     networks:

@@ -7,40 +7,26 @@ Please DO NOT modify this file and make sure you have created config.py, or the 
 DO NOT comment any setting you don't need, just leave it original.
 """
 
-# Telegram notification information
-# Telegram bot token, go get one from @BotFather
-TELEGRAM_TOKEN = ""
-# Telegram chat_id, it can be yourself, the admin group, or a channel
-# The ID can be retrived from any message in the chat, just forward a message to @JsonDumpBot and find it in the json
-TELEGRAM_CHAT_ID = ""
-# Log format
-TELEGRAM_LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-
 # Email notification information
-# Email server, for example, smtp.gmail.com
-EMAIL_HOST = "smtp.gmail.com"
-# Email server port, for example, 587 for gmail
-EMAIL_PORT = 587
+# Mail server
+MAIL_HOST = os.getenv("MAIL_HOST")
 # Email sender
-EMAIL_SENDER = ""
-# The email account used to send email
-EMAIL_HOST_USER = ""
-# Password for the email account
-EMAIL_HOST_PASSWORD = ""
+EMAIL_SENDER = "admin@yourdomain.com"
 # The recipient, there should be multiple admins separated by a space
-EMAIL_ADMIN = ""
+EMAIL_ADMIN = [""]
 # Log subject
-EMAIL_LOG_SUBJECT = "An error occur"
+EMAIL_LOG_SUBJECT = "An error occurred"
 # Log format
 EMAIL_LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
 # Logging
 # Log file path
-LOG_FILE = "monitoring.log"
+LOG_FILE = "/var/log/monitoring.log"
 # Log format for file
 FILE_LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 # Log format for console
 CONSOLE_LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
 # Send notification in specified way when log is above certain level
 # Set to None to disable
 # Log level from low to high:
@@ -48,6 +34,5 @@ CONSOLE_LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 SENDING_LEVEL = {
     "console": logging.DEBUG,
     "file": logging.DEBUG,
-    "telegram": logging.WARNING,
     "email": logging.ERROR,
 }
