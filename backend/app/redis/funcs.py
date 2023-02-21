@@ -4,7 +4,7 @@ import redis
 
 class Redis:
     def __init__(self):
-        # when no flask
+        # without flask
         self.host = os.getenv("REDIS_HOST", "localhost")
         self.port = os.getenv("REDIS_PORT", 6379)
         self.client = redis.Redis(host=self.host, port=self.port, db=0)

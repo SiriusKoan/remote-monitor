@@ -9,6 +9,7 @@ networks:
 services:
   nginx:
     image: nginx
+    container_name: nginx
     ports:
       - "80:80"
       - "443:443"
@@ -19,11 +20,13 @@ services:
       - net
   redis:
     image: redis:7.0.4-alpine
+    container_name: redis
     networks:
       - net
     ports:
       - "127.0.0.1:6379:6379"
   backend:
+    container_name: backend
     environment:
       - FLASK_APP=manage.py
       - FLASK_ENV=development
@@ -36,6 +39,7 @@ services:
     networks:
       - net
   frontend:
+    container_name: frontend
     build:
       context: frontend
     #volumes:
