@@ -5,5 +5,6 @@ env.sh
 monitoring.log
 keys
 nginx/ssl
-cli/hosts.py
+hosts.py
 .coverage
+config.py
