@@ -26,7 +26,7 @@ r = Redis()
 
 def get_record(host, func):
     res = r.get(host, func)
-    return res if res else ""
+    return res if res else b""
 
 
 def set_record(host, func, value):

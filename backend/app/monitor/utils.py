@@ -43,18 +43,19 @@ class Base(abc.ABC):
         return NotImplemented
 
     def __call__(self, host):
-        logger.info(f"{self.__name__} start running")
+        logger.info(f"{host}:{self.__name__}:Start running")
         while True:
             try:
                 res = self.job(host)
                 if isinstance(res, bool):
-                    set_record(host, self.__name__, "true" if res else "false")
                     if not res:
-                        logger.warning(f"{self.__name__}: failed")
+                        logger.warning(f"{host}:{self.__name__}:Failed")
+                    else:
+                        old_record = get_record(host, self.__name__)
+                        if old_record.decode() != "true":
+                            logger.info(f"{host}:{self.__name__}:Recover")
+                    set_record(host, self.__name__, "true" if res else "false")
                 else:
-                    old_record = get_record(host, self.__name__)
-                    if not old_record or old_record == "false":
-                        logger.info(f"{self.__name__}: recover")
                     set_record(host, self.__name__, res)
             except Exception as e:
                 set_record(host, self.__name__, "")
